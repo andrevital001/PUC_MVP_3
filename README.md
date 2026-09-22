@@ -232,3 +232,4 @@ Segue abaixo os arquivos utilizados:
 
 <img width="1983" height="615" alt="Pipeline_de_dados" src="https://github.com/user-attachments/assets/5f481f8e-e313-48b4-9803-d88365c4ff55" />
 
+## 9. Autoavaliação
