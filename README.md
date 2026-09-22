@@ -78,6 +78,41 @@ Segue abaixo os arquivos utilizados:
 
 <img width="1907" height="898" alt="image" src="https://github.com/user-attachments/assets/b5901cb4-8785-439e-ab96-1ce3d79e3bc7" />
 
+## 4.1. Qualidade dos Dados
+
+**_4.1.1. Estrutura_**
+
+  Todos os arquivos carregados apresentaram a mesma estrutura, composta por quatro colunas descritivas (_Regiao, Unidades da Federacao, Unidade e Produto_) e dez colunas referentes aos anos de 2014 a 2023.
+  Essa padronização estrutural possibilitou a consolidação dos arquivos em uma única tabela na camada Bronze, sem necessidade de adaptações específicas para cada conjunto de dados.
+
+**_4.1.2. Valores Ausentes_**
+
+* Foram localizados valores nulos, principalmente na coluna _Regiao_.
+* Foi encontrado o caractere "-" nas colunas onde estão os valores de produção, representando a inexistência de produção para determinado produto, Unidade da Federação e ano.
+  
+**_4.1.3. Inconsistência de tipos_**
+
+  Foi observado que as colunas anuais apresentavam diferentes tipos de dados entre os arquivos.
+
+  Enquanto alguns arquivos foram interpretados automaticamente como numéricos (float), outros foram carregados como texto (string) em razão da presença simultânea de:
+* separadores de milhares (.);
+* separadores decimais (,);
+* valores representados pelo caractere "-".
+
+**_4.1.4. Padronização textual_**
+
+  Os atributos descritivos apresentavam pequenas inconsistências de formatação, como espaços em branco excedentes.
+
+**_4.1.5. Estrutura Wide_**
+
+  Os dados disponibilizados pela ANP encontram-se originalmente no formato Wide, no qual cada ano é representado por uma coluna distinta.
+
+**_4.1.6. Avaliação da Qualidade dos Dados_**
+  
+  A análise de qualidade demonstrou que os dados apresentam boa consistência estrutural, sendo as principais alterações estão relacionadas à padronização dos tipos de dados, no tratamento dos valores ausentes e na reorganização do formato dos registros.
+
+  Os tratamentos adequados serão realizados na camada Silver, onde espera-se obter um conjunto de dados padronizado, consistente e adequado para a construção das tabelas analíticas da camada Gold e para responder às perguntas de negócio definidas neste MVP.
+
 ## 5. Silver
 
   A criação da Tabela _producao_energetica_ no schema **silver** está documentada no Notebook **04MVP_silver**.
@@ -189,3 +224,11 @@ Segue abaixo os arquivos utilizados:
 | **ano**     | int    | Ano de referência da produção energética, compreendido entre 2014 e 2023.                                                                                       |
 | **produto** | string | Produto energético analisado conforme classificação da ANP.                                                                                                     |
 | **qtd_ufs** | int    | Quantidade de Unidades da Federação que registraram produção do respectivo produto no ano analisado, considerando apenas registros com produção maior que zero. |
+
+
+## 7. Análise
+
+## 8. Pipeline de Dados
+
+<img width="1983" height="615" alt="Pipeline_de_dados" src="https://github.com/user-attachments/assets/5f481f8e-e313-48b4-9803-d88365c4ff55" />
+
