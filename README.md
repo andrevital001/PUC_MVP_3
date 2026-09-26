@@ -8,7 +8,10 @@
 
 ## Descrição do Problema
 
-A fim de responder algumas questões estratégicas sobre a produção energética brasileira, foi proposta a criação de um pipeline de Engenharia de Dados baseado na arquitetura Medalhão (Bronze, Silver e Gold), utilizando os dados públicos da ANP de 2014 a 2023. Deste modo será obtido ao final do processo um conjunto de dados analíticos capaz de responder as questões abaixo.
+  Os dados de produção energética brasileira são disponibilizados no **Anuário Estatístico da ANP**. Estes encontram-se distribuídos em diferentes arquivos e estruturados originalmente para consulta individual. 
+  Para realização de análises integradas sobre a diversidade e a evolução territorial da produção energética brasileira torna-se necessário consolidar e estruturar estes arquivos.
+
+  A fim de responder algumas questões estratégicas sobre a produção energética brasileira, foi proposta a criação de um pipeline de Engenharia de Dados baseado na arquitetura Medalhão (Bronze, Silver e Gold), utilizando os dados públicos da ANP (Agência Nacional do Petróleo, Gás Natural e Biocombustíveis) de 2014 a 2023. Deste modo será obtido ao final do processo um conjunto de dados analíticos capaz de responder as questões abaixo.
 
 
 ## Perguntas
@@ -43,7 +46,7 @@ A fim de responder algumas questões estratégicas sobre a produção energétic
 
   Os arquivos carregados fazem parte do anuário estatístico da ANP, no link abaixo: [Dados de produção do anuário estatístico da ANP (Agência Nacional do Petróleo, Gás Natural e Biocombustíveis)](https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-2023)
 
-  Como há o objetivo de contruir um MVP que dê continuidade aos anteriores, acessaremos os arquivos por meio do diretório público github já criado para as primeiras sprints. [Diretório no Github](https://github.com/andrevital001/PUC)
+  Como há o objetivo de construir um MVP que dê continuidade aos anteriores, acessaremos os arquivos por meio do diretório público github já criado para as primeiras sprints. [Diretório no Github](https://github.com/andrevital001/PUC)
 
 Segue abaixo os arquivos utilizados:
 
@@ -72,7 +75,7 @@ Segue abaixo os arquivos utilizados:
   **Este Notebook é composto pelas seguintes ações:**
 * Definição do uso do catálogo **mvp** e schema **bronze**;
 * Consolidação dos arquivos num único dataframe via python;
-* Renomar os cabeçalhos de modo a remover os caracteres especiais e simplificar os títulos.
+* Renomear os cabeçalhos de modo a remover os caracteres especiais e simplificar os títulos.
 
 > Segue abaixo a consulta da tabela **producao_energetica** criada no schema **bronze**:
 
@@ -110,7 +113,7 @@ Segue abaixo os arquivos utilizados:
 
 **_4.1.6. Avaliação da Qualidade dos Dados_**
   
-  A análise de qualidade demonstrou que os dados apresentam boa consistência estrutural, sendo as principais alterações estão relacionadas à padronização dos tipos de dados, no tratamento dos valores ausentes e na reorganização do formato dos registros.
+  A análise de qualidade demonstrou que os dados apresentam boa consistência estrutural, sendo as principais necessidades de tratamento relacionadas à padronização dos tipos de dados, no tratamento dos valores ausentes e na reorganização do formato dos registros.
 
   Os tratamentos adequados serão realizados na camada Silver, onde espera-se obter um conjunto de dados padronizado, consistente e adequado para a construção das tabelas analíticas da camada Gold e para responder às perguntas de negócio definidas neste MVP.
 
@@ -131,7 +134,7 @@ Segue abaixo os arquivos utilizados:
   
    _(A informação não será necessária por se tratar apenas de um agrupamento do campo 'uf')_
   
-* Padronização de valores vazios, idendificando-os como _null_;
+* Padronização de valores vazios, identificando-os como _null_;
 
   _(Algumas células continham '-' no lugar de null, o que prejudicava a interpretação dos dados)_
   
@@ -165,7 +168,7 @@ Segue abaixo os arquivos utilizados:
 
 ### 6.1. Data Marts criados
 
-  Nesta camada serão criados= 3 Data Marts à partir da tabela **mvp.silver.producao_energetica**. **São eles:**
+  Nesta camada serão criados 3 Data Marts à partir da tabela **mvp.silver.producao_energetica**. **São eles:**
 * **diversidade_ano**
 * **diversidade_uf**
 * **expansao_produtos**
@@ -211,11 +214,11 @@ Segue abaixo os arquivos utilizados:
 | **qtd_produtos** | int    | Quantidade de produtos energéticos distintos produzidos pela Unidade da Federação no respectivo ano, considerando apenas registros com produção maior que zero. |
 
 
-### 6.4. Criação do Data Mart _exnpansao_produtos_
+### 6.4. Criação do Data Mart _expansao_produtos_
 
   Este Data Mart contém as colunas 'ano' e 'produto', contabilizando a quantidade de estados onde a produção foi maior que 0. 
 
-  O objetivo auxiliar na resposta à terceira pergunta:
+  O objetivo é auxiliar na resposta à terceira pergunta:
 > _"Quais produtos apresentaram maior expansão territorial entre 2014 e 2023?"_
 
 **Segue abaixo imagem do Data Mart criado e executado:**
@@ -247,7 +250,7 @@ Segue abaixo os arquivos utilizados:
 
 > Quais Unidades da Federação apresentam maior diversidade de produtos energéticos produzidos ao longo da série histórica?
 
-  A resposta a esta pergnta será baseada no Data Mart **gold.diversidade_uf**
+  A resposta a esta pergunta será baseada no Data Mart **gold.diversidade_uf**
 
 **Segue abaixo a imagem da consulta SQL utilizada, ordenando os UFs de acordo com a quantidade de produtos produzidos na série:**
 
@@ -268,7 +271,7 @@ _Gráfico - Ranking da Diversidade de Produtos por Unidade da Federação_
 <img width="1337" height="382" alt="image" src="https://github.com/user-attachments/assets/734de824-eaf9-428c-84c7-f221048819f9" />
 
 
-  Conforme apresentado na tabela e no gráfico acima, vemos que Ceará, Rio de Janeiro e São Paulo possuem 6 produtos produtos diferentes cada, seguidos por Bahia e Rio Grande do Norte, com 5 produtos cada. Neste resultado observamos a proeminência das Regiões Sudeste e Nordeste na diversidade da produção energética brasileira.
+  Conforme apresentado na tabela e no gráfico acima, vemos que Ceará, Rio de Janeiro e São Paulo possuem 6 produtos diferentes cada, seguidos por Bahia e Rio Grande do Norte, com 5 produtos cada. Neste resultado observamos a proeminência das Regiões Sudeste e Nordeste na diversidade da produção energética brasileira.
 
 
 ### 7.3. Pergunta 2
@@ -277,7 +280,7 @@ _Gráfico - Ranking da Diversidade de Produtos por Unidade da Federação_
 
   A resposta a esta pergnta será baseada no Data Mart **gold.diversidade_ano**
 
-**Segue abaixo a imagem da consulta SQL utilizada, calculando a média da variedade de produtos produzidos por Unidade da feração no período de 2014 a 2023:**
+**Segue abaixo a imagem da consulta SQL utilizada, calculando a média da variedade de produtos produzidos por Unidade da Federação no período de 2014 a 2023:**
 
 <img width="1342" height="186" alt="image" src="https://github.com/user-attachments/assets/b650f830-ca74-4a3b-8da1-6ee9fb41e8e5" />
 
@@ -289,7 +292,7 @@ _Tabela - Média anual da variedade de produtos por Unidade da Federação_
 <img width="317" height="332" alt="image" src="https://github.com/user-attachments/assets/b8253f63-7f0a-4c0e-9a36-4fc5c7a186ab" />
 
 
-**Segue abaixo a imagem do gráfico de barras gerado a parte da tabela gerada:**
+**Segue abaixo a imagem do gráfico de barras gerado a partir da tabela gerada:**
 
 _Gráfico - Média anual da variedade de produtos por Unidade da Federação_
 
@@ -362,7 +365,10 @@ _Gráfico - Expansão territorial dos produtos de 2014 a 2023_
 
 ## 8. Pipeline de Dados
 
-  Este Pipeline foi construído na plataforma Databricks. Foram criados 6 notebooks:
+  Este Pipeline foi construído na plataforma Databricks. 
+  O pipeline inicia com a preparação do ambiente e carregamento dos arquivos CSV na Staging. Posteriormente, os dados são consolidados na Bronze, tratados e padronizados na Silver e modelados em Data Marts na Gold. Por fim, os Data Marts são utilizados nas consultas da etapa de análise.
+  
+  Foram criados 6 notebooks:
 
 * 01MVP_preparacao
 * 02MVP_download
