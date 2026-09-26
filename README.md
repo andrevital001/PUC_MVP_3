@@ -4,9 +4,9 @@
 
 **Matrícula:** 4052025000626
 
-## 1. Objetivo
+## 1. Contexto de Negócios e Perguntas
 
-## Descrição do Problema
+### 1.1. Descrição do Problema
 
   Os dados de produção energética brasileira são disponibilizados no **Anuário Estatístico da ANP**. Estes encontram-se distribuídos em diferentes arquivos e estruturados originalmente para consulta individual. 
   Para realização de análises integradas sobre a diversidade e a evolução territorial da produção energética brasileira torna-se necessário consolidar e estruturar estes arquivos.
@@ -14,7 +14,7 @@
   A fim de responder algumas questões estratégicas sobre a produção energética brasileira, foi proposta a criação de um pipeline de Engenharia de Dados baseado na arquitetura Medalhão (Bronze, Silver e Gold), utilizando os dados públicos da ANP (Agência Nacional do Petróleo, Gás Natural e Biocombustíveis) de 2014 a 2023. Deste modo será obtido ao final do processo um conjunto de dados analíticos capaz de responder as questões abaixo.
 
 
-## Perguntas
+### 1.2. Perguntas
 > 1. Quais Unidades da Federação apresentam maior diversidade de produtos energéticos produzidos ao longo da série histórica?
 
 > 2. Existe tendência de diversificação da matriz produtiva estadual entre 2014 e 2023?
@@ -66,7 +66,9 @@ Segue abaixo os arquivos utilizados:
   <img width="1880" height="855" alt="image" src="https://github.com/user-attachments/assets/50bc67c9-8f53-4c83-a3d9-cb5f4f6d8e0d" />
 
 
-## 4. Bronze
+## 4. Modelagem e Catálogo de Dados
+
+### 4.1. Bronze
 
   A criação da Tabela _producao_energetica_ no schema **bronze** está documentada no Notebook **03MVP_bronze**.
 
@@ -82,19 +84,19 @@ Segue abaixo os arquivos utilizados:
 <img width="1907" height="898" alt="image" src="https://github.com/user-attachments/assets/b5901cb4-8785-439e-ab96-1ce3d79e3bc7" />
 
 
-## 4.1. Qualidade dos Dados
+### 4.1.1. Qualidade dos Dados
 
-**_4.1.1. Estrutura_**
+**_a. Estrutura_**
 
   Todos os arquivos carregados apresentaram a mesma estrutura, composta por quatro colunas descritivas (_Regiao, Unidades da Federacao, Unidade e Produto_) e dez colunas referentes aos anos de 2014 a 2023.
   Essa padronização estrutural possibilitou a consolidação dos arquivos em uma única tabela na camada Bronze, sem necessidade de adaptações específicas para cada conjunto de dados.
 
-**_4.1.2. Valores Ausentes_**
+**_b. Valores Ausentes_**
 
 * Foram localizados valores nulos, principalmente na coluna _Regiao_.
 * Foi encontrado o caractere "-" nas colunas onde estão os valores de produção, representando a inexistência de produção para determinado produto, Unidade da Federação e ano.
   
-**_4.1.3. Inconsistência de tipos_**
+**_c. Inconsistência de tipos_**
 
   Foi observado que as colunas anuais apresentavam diferentes tipos de dados entre os arquivos.
 
@@ -103,29 +105,29 @@ Segue abaixo os arquivos utilizados:
 * separadores decimais (,);
 * valores representados pelo caractere "-".
 
-**_4.1.4. Padronização textual_**
+**_d. Padronização textual_**
 
   Os atributos descritivos apresentavam pequenas inconsistências de formatação, como espaços em branco excedentes.
 
-**_4.1.5. Estrutura Wide_**
+**_e. Estrutura Wide_**
 
   Os dados disponibilizados pela ANP encontram-se originalmente no formato Wide, no qual cada ano é representado por uma coluna distinta.
 
-**_4.1.6. Avaliação da Qualidade dos Dados_**
+**_f. Avaliação da Qualidade dos Dados_**
   
   A análise de qualidade demonstrou que os dados apresentam boa consistência estrutural, sendo as principais necessidades de tratamento relacionadas à padronização dos tipos de dados, no tratamento dos valores ausentes e na reorganização do formato dos registros.
 
   Os tratamentos adequados serão realizados na camada Silver, onde espera-se obter um conjunto de dados padronizado, consistente e adequado para a construção das tabelas analíticas da camada Gold e para responder às perguntas de negócio definidas neste MVP.
 
 
-## 5. Silver
+### 4.2. Silver
 
   A criação da Tabela _producao_energetica_ no schema **silver** está documentada no Notebook **04MVP_silver**.
 
   O objetivo desta etapa é transformar os dados consolidados da camada Bronze em um conjunto de dados limpo, padronizado e estruturado para consumo analítico.
 
 
-### 5.1. Etapas do tratamentos dos dados:
+### 4.2.1. Etapas do tratamentos dos dados:
 * Padronização e simplificação dos cabeçalhos, removendo os caracteres especiais e maiúsculas;
   
     _(Adoção do snake_case a fim de padronizar e melhorar a legibilidade do código)_
@@ -150,7 +152,7 @@ Segue abaixo os arquivos utilizados:
 <img width="1906" height="892" alt="image" src="https://github.com/user-attachments/assets/5d79bcc1-1ece-4a41-b3eb-c67625708617" />
 
 
-### 5.2. Catálogo de Dados
+### 4.2.3. Catálogo de Dados
 
 | Coluna             | Tipo   | Descrição                                                                                                                                                                                                                        |
 | ------------------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -161,12 +163,12 @@ Segue abaixo os arquivos utilizados:
 | **producao**       | double | Quantidade produzida do respectivo produto energético na Unidade da Federação, expressa na unidade de medida correspondente. Valores ausentes foram convertidos para **NULL** durante o processo de tratamento da camada Silver. |
 
 
-## 6. Gold
+### 4.3. Gold
    
   O objetivo desta camada é realizar a transformação dos da tabela **mvp.silver.producao_energetica** em um nova camada **gold** modelada para a análise proposta.
 
 
-### 6.1. Data Marts criados
+### 4.3.1. Data Marts criados
 
   Nesta camada serão criados 3 Data Marts à partir da tabela **mvp.silver.producao_energetica**. **São eles:**
 * **diversidade_ano**
@@ -174,7 +176,7 @@ Segue abaixo os arquivos utilizados:
 * **expansao_produtos**
 
 
-### 6.2. Criação do Data Mart _gold.diversidade_uf_
+### 4.3.2. Criação do Data Mart _gold.diversidade_uf_
 
   Neste Data Mart são agrupados os produtos por UF e são consideradas apenas as produções maiores do que 0.
 
@@ -185,7 +187,7 @@ Segue abaixo os arquivos utilizados:
 <img width="1205" height="587" alt="image" src="https://github.com/user-attachments/assets/a3127a69-3720-4027-ba9b-774836fec677" />
 
 
- **_6.2.1. Catálogo de dados - gold.diversidade_uf_**
+ **_a. Catálogo de dados - gold.diversidade_uf_**
 
  
 | Coluna           | Tipo   | Descrição                                                                                                                                                                             |
@@ -194,7 +196,7 @@ Segue abaixo os arquivos utilizados:
 | **qtd_produtos** | int    | Quantidade de produtos energéticos distintos produzidos pela Unidade da Federação durante o período analisado (2014–2023), considerando apenas registros com produção maior que zero. |
 
 
-### 6.3. Criação do Data Mart _diversidade_ano_
+### 4.3.3. Criação do Data Mart _diversidade_ano_
 
   Neste Data Mart serão consideradas as colunas 'ano' e 'uf', e contabilizados aqueles onde a quantidade de produção for maior que 0.
 
@@ -205,7 +207,7 @@ Segue abaixo os arquivos utilizados:
 <img width="1192" height="592" alt="image" src="https://github.com/user-attachments/assets/9357798c-1828-44e9-b998-ef71d1b97009" />
 
 
- **_6.3.1. Catálogo de dados - gold.diversidade_ano_**
+ **_a. Catálogo de dados - gold.diversidade_ano_**
 
  | Coluna           | Tipo   | Descrição                                                                                                                                                       |
 | ---------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -214,7 +216,7 @@ Segue abaixo os arquivos utilizados:
 | **qtd_produtos** | int    | Quantidade de produtos energéticos distintos produzidos pela Unidade da Federação no respectivo ano, considerando apenas registros com produção maior que zero. |
 
 
-### 6.4. Criação do Data Mart _expansao_produtos_
+### 4.3.4. Criação do Data Mart _expansao_produtos_
 
   Este Data Mart contém as colunas 'ano' e 'produto', contabilizando a quantidade de estados onde a produção foi maior que 0. 
 
@@ -226,7 +228,7 @@ Segue abaixo os arquivos utilizados:
 <img width="1196" height="633" alt="image" src="https://github.com/user-attachments/assets/08f94722-577a-43b3-afbd-f74aa2991381" />
 
 
- **_6.4.1. Catálogo de dados - gold.expansao_produtos_**
+ **_a. Catálogo de dados - gold.expansao_produtos_**
 
 
 | Coluna      | Tipo   | Descrição                                                                                                                                                       |
@@ -236,17 +238,17 @@ Segue abaixo os arquivos utilizados:
 | **qtd_ufs** | int    | Quantidade de Unidades da Federação que registraram produção do respectivo produto no ano analisado, considerando apenas registros com produção maior que zero. |
 
 
-## 7. Análise
+## 5. Análise de Dados
 
 
-### 7.1. Introdução da Análise
+### 5.1. Introdução da Análise
 
   Nesta etapa são utilizadas as tabelas da camada Gold para responder às perguntas de negócio definidas no início do projeto.
 
   As consultas foram realizadas utilizando SQL, tendo como base os Data Marts construídos durante a etapa de modelagem.
 
 
-### 7.2. Pergunta 1
+### 5.2. Pergunta 1
 
 > Quais Unidades da Federação apresentam maior diversidade de produtos energéticos produzidos ao longo da série histórica?
 
@@ -274,7 +276,7 @@ _Gráfico - Ranking da Diversidade de Produtos por Unidade da Federação_
   Conforme apresentado na tabela e no gráfico acima, vemos que Ceará, Rio de Janeiro e São Paulo possuem 6 produtos diferentes cada, seguidos por Bahia e Rio Grande do Norte, com 5 produtos cada. Neste resultado observamos a proeminência das Regiões Sudeste e Nordeste na diversidade da produção energética brasileira.
 
 
-### 7.3. Pergunta 2
+### 5.3. Pergunta 2
 
 > Existe tendência de diversificação da matriz produtiva estadual entre 2014 e 2023?
 
@@ -303,7 +305,7 @@ _Gráfico - Média anual da variedade de produtos por Unidade da Federação_
   Embora os anos de 2022 e 2023 apresentem os maiores valores médios da série histórica, essa elevação é discreta e, isoladamente, não caracteriza uma tendência consistente de crescimento da diversificação ao longo do período analisado.
 
 
-### 7.4. Pergunta 3
+### 5.4. Pergunta 3
 
 > Quais produtos apresentaram maior expansão territorial ao longo dos anos?
 
@@ -313,7 +315,7 @@ _Gráfico - Média anual da variedade de produtos por Unidade da Federação_
 **Para responder mais adequadamente à pergunta apresentada, serão criadas duas consultas complementares.**
 
 
- **_7.4.1. Consulta 1_**
+ ### 5.4.1. Consulta 1
 
 
 **Segue abaixo a imagem da consulta SQL utilizada, contabilizando a quantidade de Unidades da Federação em que há a produção de cada um dos dos produtos analisados ano a ano:**
@@ -335,7 +337,7 @@ _Gráfico - Expansão territorial dos produtos ano a ano_
 <img width="1337" height="400" alt="image" src="https://github.com/user-attachments/assets/f261efb5-a9d6-49cd-93fa-8cc4a97397f7" />
 
 
- **_7.4.2. Consulta 2_**
+ ### 5.4.2. Consulta 2
 
 
 **Segue abaixo a imagem da consulta SQL utilizada, demonstrando a variação absoluta do número de Unidades da Federação produtoras de cada produto energético entre 2014 e 2023:**
@@ -357,13 +359,13 @@ _Gráfico - Expansão territorial dos produtos de 2014 a 2023_
 <img width="1340" height="402" alt="image" src="https://github.com/user-attachments/assets/fad7a103-d91c-4afc-91f8-f9b7edbb396b" />
 
 
-### 7.5. Conclusão
+### 5.5. Conclusão
 
    Observa-se nas tabelas e gráficos apresentados que o Biometano apresentou a maior expansão territorial da série histórica, passando de nenhuma Unidade da Federação produtora em 2014 para três em 2023. Biodiesel e Gás Natural também registraram crescimento, ainda que discreto, ampliando sua presença em uma Unidade da Federação cada.
   Em contrapartida, Etanol anidro e hidratado e LGN apresentaram redução no número de estados produtores durante o período analisado, enquanto o Petróleo manteve estabilidade. Esses resultados indicam que a evolução territorial da produção energética brasileira ocorreu de forma heterogênea, com comportamentos distintos entre os diferentes produtos energéticos.
 
 
-## 8. Pipeline de Dados
+## 6. Pipeline de Dados
 
   Este Pipeline foi construído na plataforma Databricks. 
   O pipeline inicia com a preparação do ambiente e carregamento dos arquivos CSV na Staging. Posteriormente, os dados são consolidados na Bronze, tratados e padronizados na Silver e modelados em Data Marts na Gold. Por fim, os Data Marts são utilizados nas consultas da etapa de análise.
@@ -381,7 +383,7 @@ Segue abaixo a imagem que apresenta a estrutura do Pipeline:
 
 <img width="1983" height="615" alt="Pipeline_de_dados" src="https://github.com/user-attachments/assets/5f481f8e-e313-48b4-9803-d88365c4ff55" />
 
-## 9. Autoavaliação
+## 7. Autoavaliação
 
   Entende-se o objetivo do presente trabalho foi atingido de forma satisfatória, uma vez que foi possível implementar todas as etapas previstas da arquitetura de dados, desde a obtenção dos arquivos CSV até a construção dos Data Marts na camada Gold, utilizados para responder às perguntas de negócio definidas no planejamento do trabalho.
   Entre as principais dificuldades encontradas destaca-se a adaptação da estrutura original dos dados disponibilizados pela ANP. Durante o desenvolvimento também foram enfrentadas dificuldades relacionadas ao ambiente do Databricks, como problemas temporários de conexão com o recurso Serverless, posteriormente solucionados por meio da atualização do ambiente de execução.
